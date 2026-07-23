@@ -1,0 +1,13 @@
+{
+  "name": "js-obfuscator-tool",
+  "version": "1.0.0",
+  "description": "EliteProTech JS Obfuscator",
+  "main": "api/obfuscate.js",
+  "scripts": {
+    "vercel-build": "echo Hello"
+  },
+  "dependencies": {
+    "javascript-obfuscator": "^4.1.0",
+    "axios": "^1.6.0"
+  }
+}
