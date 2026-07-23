@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>EliteProTech JS Obfuscator</title>
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #13131a;
+            --bg-tertiary: #0d0d14;
+            --border-color: #2a2a3a;
+            --border-hover: #3a3a4a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #888;
+            --accent: #a855f7;
+            --accent-dark: #6c5ce7;
+            --success: #00ff88;
+            --warning: #ffaa00;
+            --danger: #ef4444;
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --gap: 16px;
+            --header-h: 52px;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            min-height: 100dvh;
+            line-height: 1.5;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body.modal-open {
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 16px;
+            height: var(--header-h);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .header-icon {
+            width: 24px;
+            height: 24px;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .header-title {
+            font-size: clamp(11px, 2.5vw, 15px);
+            font-weight: 700;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 0;
+            flex-shrink: 1;
+        }
+
+        .header-sample {
+            margin-left: auto;
+            background: #1a1a2e;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 7px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            min-height: 36px;
+        }
+
+        .header-sample:hover {
+            background: #2a2a3e;
+            border-color: var(--border-hover);
+        }
+
+        .header-sample:active {
+            transform: scale(0.97);
+        }
+
+        .header-sample svg {
+            width: 13px;
+            height: 13px;
+            flex-shrink: 0;
+        }
+
+        .header-sample .sample-label {
+            display: inline !important;
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: var(--gap);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            gap: 12px;
+        }
+
+        .controls-left {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .controls-right {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .preset-group {
+            display: flex;
+            gap: 2px;
+            background: var(--bg-tertiary);
+            padding: 3px;
+            border-radius: var(--radius-md);
+        }
+
+        .preset-btn {
+            padding: 7px 14px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+            white-space: nowrap;
+            min-height: 34px;
+        }
+
+        .preset-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .preset-btn.active {
+            background: var(--accent-dark);
+            color: white;
+        }
+
+        .btn {
+            padding: 9px 18px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            white-space: nowrap;
+            min-height: 38px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn-icon {
+            width: 15px;
+            height: 15px;
+            flex-shrink: 0;
+        }
+
+        .btn-primary {
+            background: var(--accent-dark);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a4bd1;
+        }
+
+        .btn-secondary {
+            background: #1a1a2e;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: #2a2a3e;
+            border-color: var(--border-hover);
+        }
+
+        .btn-success {
+            background: #00c853;
+            color: var(--bg-primary);
+        }
+
+        .btn-success:hover {
+            background: #00b34a;
+        }
+
+        .btn-github {
+            background: #24292e;
+            color: white;
+        }
+
+        .btn-github:hover {
+            background: #2f363d;
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--gap);
+            margin: var(--gap) 0;
+        }
+
+        .panel {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-shrink: 0;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .panel-title {
+            font-weight: 600;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+        }
+
+        .panel-icon {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        .panel-actions {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .textarea-wrapper {
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        textarea {
+            width: 100%;
+            flex: 1;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--success);
+            font-family: 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            padding: 12px;
+            resize: vertical;
+            min-height: 200px;
+            transition: border-color 0.2s;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border-color) transparent;
+        }
+
+        textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        textarea::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        textarea::-webkit-scrollbar-thumb {
+            background-color: var(--border-color);
+            border-radius: 4px;
+        }
+
+        textarea::-webkit-scrollbar-thumb:hover {
+            background-color: var(--border-hover);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-dark);
+        }
+
+        textarea[readonly] {
+            color: #00cc6a;
+        }
+
+        textarea::placeholder {
+            color: #555;
+        }
+
+        #inputCode {
+            height: clamp(220px, 38vh, 380px);
+            padding-right: 80px;
+        }
+
+        #outputCode {
+            height: clamp(220px, 42vh, 420px);
+        }
+
+        .clear-btn-bottom {
+            position: absolute;
+            bottom: 12px;
+            right: 22px;
+            background: rgba(26, 26, 46, 0.9);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 5px 10px;
+            border-radius: var(--radius-sm);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+            backdrop-filter: blur(4px);
+        }
+
+        .clear-btn-bottom:hover {
+            background: #2a2a3e;
+            border-color: var(--border-hover);
+        }
+
+        .cli-section {
+            margin-top: 10px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-shrink: 0;
+            flex-wrap: nowrap;
+        }
+
+        .cli-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .cli-label svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .cli-input-wrapper {
+            flex: 1;
+            position: relative;
+            min-width: 0;
+        }
+
+        #cliInput {
+            width: 100%;
+            height: 38px;
+            min-height: 38px;
+            padding: 8px 42px 8px 12px;
+            font-size: 12px;
+            color: var(--warning);
+            resize: none;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+        }
+
+        #cliInput:focus {
+            outline: none;
+            border-color: var(--accent-dark);
+        }
+
+        #cliInput.has-text {
+            border-color: var(--warning);
+            box-shadow: 0 0 10px rgba(255, 170, 0, 0.3), 0 0 20px rgba(255, 170, 0, 0.1);
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 170, 0, 0.3), 0 0 20px rgba(255, 170, 0, 0.1); }
+            50% { box-shadow: 0 0 15px rgba(255, 170, 0, 0.5), 0 0 30px rgba(255, 170, 0, 0.2); }
+        }
+
+        .cli-send-btn {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--warning);
+            color: var(--bg-primary);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .cli-send-btn.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .cli-send-btn:hover {
+            background: #ffbb22;
+        }
+
+        .cli-send-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .loading-line {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-dark), var(--accent));
+            border-radius: 0 0 var(--radius-md) var(--radius-md);
+            animation: loadingLine 1.5s ease-in-out infinite;
+            z-index: 20;
+        }
+
+        @keyframes loadingLine {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            padding: 14px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            margin-top: var(--gap);
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 2px;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .badge-light { background: #22c55e20; color: #22c55e; }
+        .badge-standard { background: #f59e0b20; color: #f59e0b; }
+        .badge-maximum { background: #ef444420; color: #ef4444; }
+
+        .notification {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--danger);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 1100;
+            animation: slideUp 0.3s ease;
+            white-space: nowrap;
+            max-width: 90vw;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+
+        .notification.success {
+            background: #22c55e;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateX(-50%) translateY(100px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            width: 100%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalIn 0.25s ease;
+        }
+
+        @keyframes modalIn {
+            from { transform: scale(0.95) translateY(10px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-field {
+            margin-bottom: 16px;
+        }
+
+        .modal-field label {
+            display: block;
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-field input {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .modal-field input:focus {
+            outline: none;
+            border-color: var(--accent-dark);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        .footer {
+            padding: 20px 16px;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            width: 36px;
+            height: 36px;
+            color: #555;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .footer-link:hover {
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .footer-link svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 1100px) {
+            .controls {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            .controls-left { flex: 1 1 auto; }
+            .controls-right {
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+            #inputCode,
+            #outputCode {
+                height: clamp(200px, 35vh, 340px);
+            }
+        }
+
+        @media (max-width: 640px) {
+            :root {
+                --gap: 12px;
+                --header-h: 48px;
+            }
+
+            .header {
+                padding: 0 12px;
+                gap: 8px;
+            }
+
+            .header-sample {
+                padding: 6px 10px;
+                font-size: 11px;
+                min-height: 34px;
+            }
+
+            .container {
+                padding: 10px;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 10px 12px;
+                gap: 10px;
+            }
+
+            .controls-left {
+                width: 100%;
+            }
+
+            .preset-group {
+                width: 100%;
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .preset-btn {
+                text-align: center;
+                font-size: clamp(10px, 2.8vw, 12px);
+                padding: 8px 4px;
+            }
+
+            .controls-right {
+                width: 100%;
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+
+            .controls-right .btn {
+                width: 100%;
+                justify-content: center;
+                padding: 10px 4px;
+                font-size: clamp(10px, 2.8vw, 12px);
+                gap: 4px;
+            }
+            
+            .controls-right .btn .btn-icon {
+                width: 12px;
+                height: 12px;
+            }
+
+            .panel {
+                padding: 12px;
+            }
+
+            .panel-header {
+                margin-bottom: 10px;
+            }
+
+            #inputCode,
+            #outputCode {
+                height: clamp(180px, 32vh, 300px);
+                font-size: 12px;
+                padding: 10px;
+            }
+            
+            #inputCode {
+                padding-right: 70px; 
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                padding: 12px;
+            }
+
+            .stat-value {
+                font-size: 15px;
+            }
+
+            .badge {
+                font-size: 9px;
+                padding: 2px 8px;
+            }
+
+            .btn-secondary[style] {
+                padding: 5px 8px !important;
+                font-size: 11px !important;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .container {
+                padding: 8px;
+            }
+
+            .controls-right .btn {
+                padding: 10px 2px;
+                gap: 3px;
+            }
+
+            #inputCode,
+            #outputCode {
+                height: clamp(160px, 30vh, 260px);
+                font-size: 11px;
+                padding: 8px;
+            }
+
+            #inputCode {
+                padding-right: 60px;
+            }
+
+            .panel {
+                padding: 10px;
+                border-radius: var(--radius-md);
+            }
+
+            .controls {
+                border-radius: var(--radius-md);
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+                border-radius: var(--radius-md);
+            }
+
+            .stat-value {
+                font-size: 13px;
+            }
+
+            .stat-label {
+                font-size: 9px;
+            }
+
+            .modal {
+                padding: 18px 14px;
+                border-radius: var(--radius-md);
+                margin: 8px;
+            }
+
+            .modal-title {
+                font-size: 16px;
+                margin-bottom: 18px;
+            }
+
+            .modal-field input {
+                padding: 9px 10px;
+                font-size: 13px;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .modal-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .notification {
+                font-size: 11px;
+                padding: 10px 16px;
+                max-width: 95vw;
+                bottom: 16px;
+            }
+
+            .footer {
+                padding: 16px 8px;
+            }
+
+            .footer-links {
+                gap: 12px;
+            }
+
+            .footer-link {
+                width: 32px;
+                height: 32px;
+            }
+
+            .footer-link svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
+
+        @media (max-height: 500px) and (orientation: landscape) {
+            :root {
+                --header-h: 44px;
+            }
+            .header {
+                padding: 0 12px;
+            }
+            #inputCode,
+            #outputCode {
+                height: clamp(120px, 40vh, 220px);
+            }
+            .stats {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 8px;
+                padding: 10px;
+            }
+        }
+
+        @media (hover: hover) {
+            .btn:hover { filter: brightness(1.08); }
+        }
+
+        .btn:focus-visible,
+        .preset-btn:focus-visible,
+        .header-sample:focus-visible,
+        textarea:focus-visible,
+        input:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M9 12l2 2 4-4"/>
+        </svg>
+        <span class="header-title">EliteProTech JS Obfuscator</span>
+        <button class="header-sample" onclick="loadSampleFromHeader()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            <span class="sample-label">Load Sample</span>
+        </button>
+    </header>
+
+    <div class="container">
+        <div class="controls">
+            <div class="controls-left">
+                <div class="preset-group">
+                    <button class="preset-btn" data-preset="light">Light</button>
+                    <button class="preset-btn active" data-preset="standard">Standard</button>
+                    <button class="preset-btn" data-preset="maximum">Maximum</button>
+                </div>
+            </div>
+            <div class="controls-right">
+                <button class="btn btn-primary" onclick="obfuscate()">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                    <span class="btn-text">Obfuscate</span>
+                </button>
+                <button class="btn btn-success" id="downloadBtn" onclick="download()" disabled>
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    <span class="btn-text">Download</span>
+                </button>
+                <button class="btn btn-github" id="githubBtn" onclick="openGithubModal()" disabled>
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/>
+                    </svg>
+                    <span class="btn-text">Push</span>
+                </button>
+            </div>
+            <input type="file" id="fileInput" accept=".js" onchange="handleFile(event)">
+        </div>
+
+        <div class="main-grid">
+            <div class="panel">
+                <div class="panel-header">
+                    <span class="panel-title">
+                        <svg class="panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="16 18 22 12 16 6"/>
+                            <polyline points="8 6 2 12 8 18"/>
+                        </svg>
+                        Input Code
+                    </span>
+                    <div class="panel-actions">
+                        <button class="btn btn-secondary" onclick="uploadFile()" style="padding:5px 10px;font-size:11px;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                                <polyline points="17 8 12 3 7 8"/>
+                                <line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                            Upload
+                        </button>
+                        <button class="btn btn-secondary" onclick="copyInput()" style="padding:5px 10px;font-size:11px;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                <div class="textarea-wrapper">
+                    <textarea id="inputCode" placeholder="Paste your JavaScript code here..." spellcheck="false"></textarea>
+                    <button class="clear-btn-bottom" onclick="clearInput()">Clear</button>
+                </div>
+
+                <div class="cli-section">
+                    <span class="cli-label">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="4 17 10 11 4 5"/>
+                            <line x1="12" y1="19" x2="20" y2="19"/>
+                        </svg>
+                        CLI
+                    </span>
+                    <div class="cli-input-wrapper">
+                        <textarea id="cliInput" placeholder="--compact true --string-array true --string-array-encoding rc4" oninput="handleCLIInput()" spellcheck="false"></textarea>
+                        <button class="cli-send-btn" id="cliSendBtn" onclick="applyCLI()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13"/>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <span class="panel-title">
+                        <svg class="panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        </svg>
+                        Obfuscated Output
+                    </span>
+                    <div class="panel-actions">
+                        <span id="presetBadge"></span>
+                        <button class="btn btn-secondary" onclick="copyOutput()" style="padding:5px 10px;font-size:11px;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                <div class="textarea-wrapper">
+                    <textarea id="outputCode" readonly placeholder="Obfuscated code will appear here..." spellcheck="false"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div id="statsContainer"></div>
+    </div>
+
+    <div id="githubModal" class="modal-overlay" style="display:none;">
+        <div class="modal">
+            <div class="modal-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/>
+                </svg>
+                Push to GitHub
+            </div>
+            <div class="modal-field">
+                <label>GitHub Token</label>
+                <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxx">
+            </div>
+            <div class="modal-field">
+                <label>Repository (username/repo)</label>
+                <input type="text" id="githubRepo" placeholder="username/repository">
+            </div>
+            <div class="modal-field">
+                <label>File Path</label>
+                <input type="text" id="githubPath" placeholder="dist/protected.js">
+            </div>
+            <div class="modal-field">
+                <label>Commit Message</label>
+                <input type="text" id="githubMessage" value="Update obfuscated file">
+            </div>
+            <div class="modal-field">
+                <label>Branch</label>
+                <input type="text" id="githubBranch" value="main">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeGithubModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="pushToGithub()">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/>
+                    </svg>
+                    Push
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="https://whatsapp.com/channel/0029VaXaqHII1rcmdDBBsd3g" target="_blank" rel="noopener noreferrer" class="footer-link" title="WhatsApp" aria-label="WhatsApp">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+            </a>
+            <a href="https://github.com/EliteProTech" target="_blank" rel="noopener noreferrer" class="footer-link" title="GitHub" aria-label="GitHub">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+            </a>
+            <a href="https://t.me/eliteprotechs" target="_blank" rel="noopener noreferrer" class="footer-link" title="Telegram" aria-label="Telegram">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                </svg>
+            </a>
+            <a href="https://www.youtube.com/@eliteprotechs" target="_blank" rel="noopener noreferrer" class="footer-link" title="YouTube" aria-label="YouTube">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+            </a>
+        </div>
+    </footer>
+
+    <script>
+        let currentPreset = 'standard';
+        let obfuscatedCode = '';
+
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentPreset = btn.dataset.preset;
+            });
+        });
+
+        function handleCLIInput() {
+            const cliInput = document.getElementById('cliInput');
+            const sendBtn = document.getElementById('cliSendBtn');
+            if (cliInput.value.trim()) {
+                cliInput.classList.add('has-text');
+                sendBtn.classList.add('visible');
+            } else {
+                cliInput.classList.remove('has-text');
+                sendBtn.classList.remove('visible');
+            }
+        }
+
+        function applyCLI() {
+            const cliInput = document.getElementById('cliInput');
+            if (cliInput.value.trim()) {
+                showNotification('CLI options applied!', 'success');
+                obfuscate();
+            }
+        }
+
+        function showNotification(msg, type) {
+            const existing = document.querySelector('.notification');
+            if (existing) existing.remove();
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            if (type === 'success') notification.classList.add('success');
+            notification.textContent = msg;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        function copyInput() {
+            const code = document.getElementById('inputCode').value;
+            if (!code) return;
+            navigator.clipboard.writeText(code).then(() => {
+                showNotification('Copied to clipboard!', 'success');
+            }).catch(() => {
+                fallbackCopy(code);
+            });
+        }
+
+        function copyOutput() {
+            const code = document.getElementById('outputCode').value;
+            if (!code) return;
+            navigator.clipboard.writeText(code).then(() => {
+                showNotification('Copied to clipboard!', 'success');
+            }).catch(() => {
+                fallbackCopy(code);
+            });
+        }
+
+        function fallbackCopy(text) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand('copy');
+                showNotification('Copied to clipboard!', 'success');
+            } catch (e) {
+                showNotification('Copy failed');
+            }
+            document.body.removeChild(ta);
+        }
+
+        async function obfuscate() {
+            const code = document.getElementById('inputCode').value.trim();
+            if (!code) {
+                showNotification('Please enter JavaScript code');
+                return;
+            }
+
+            const btn = document.querySelector('.btn-primary');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span>';
+
+            try {
+                let requestBody = { code };
+                const cliCommand = document.getElementById('cliInput').value.trim();
+                if (cliCommand) {
+                    requestBody.cli = cliCommand;
+                } else {
+                    requestBody.preset = currentPreset;
+                }
+
+                const res = await fetch('/api/obfuscate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(requestBody)
+});
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error);
+
+                obfuscatedCode = data.obfuscatedCode;
+                document.getElementById('outputCode').value = obfuscatedCode;
+                document.getElementById('downloadBtn').disabled = false;
+                document.getElementById('githubBtn').disabled = false;
+
+                const badges = {
+                    light: '<span class="badge badge-light">Light</span>',
+                    standard: '<span class="badge badge-standard">Standard</span>',
+                    maximum: '<span class="badge badge-maximum">Maximum</span>',
+                    custom: '<span class="badge badge-standard">Custom</span>'
+                };
+                document.getElementById('presetBadge').innerHTML = badges[data.preset] || badges.custom;
+
+                document.getElementById('statsContainer').innerHTML = `
+                    <div class="stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Original</span>
+                            <span class="stat-value">${data.stats.originalSize}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Obfuscated</span>
+                            <span class="stat-value">${data.stats.obfuscatedSize}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Increase</span>
+                            <span class="stat-value">${data.stats.sizeIncrease}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Security</span>
+                            <span class="stat-value">${data.meta ? data.meta.security : 'Custom'}</span>
+                        </div>
+                    </div>
+                `;
+
+                showNotification('Obfuscated successfully!', 'success');
+            } catch (err) {
+                showNotification(err.message || 'Obfuscation failed');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> <span class="btn-text">Obfuscate</span>`;
+            }
+        }
+
+        function download() {
+            if (!obfuscatedCode) return;
+            const blob = new Blob([obfuscatedCode], { type: 'application/javascript' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'protected.js';
+            a.click();
+            URL.revokeObjectURL(url);
+            showNotification('Download started!', 'success');
+        }
+
+        function uploadFile() {
+            document.getElementById('fileInput').click();
+        }
+
+        function handleFile(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            if (!file.name.endsWith('.js')) {
+                showNotification('Only JavaScript (.js) files are allowed');
+                e.target.value = '';
+                return;
+            }
+            const wrapper = document.querySelector('.textarea-wrapper');
+            const loadingLine = document.createElement('div');
+            loadingLine.className = 'loading-line';
+            wrapper.appendChild(loadingLine);
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                document.getElementById('inputCode').value = ev.target.result;
+                loadingLine.remove();
+                showNotification('File loaded!', 'success');
+            };
+            reader.onerror = () => {
+                loadingLine.remove();
+                showNotification('Error reading file');
+            };
+            reader.readAsText(file);
+            e.target.value = '';
+        }
+
+        function clearInput() {
+            document.getElementById('inputCode').value = '';
+            document.getElementById('cliInput').value = '';
+            document.getElementById('cliInput').classList.remove('has-text');
+            document.getElementById('cliSendBtn').classList.remove('visible');
+            document.getElementById('outputCode').value = '';
+            document.getElementById('statsContainer').innerHTML = '';
+            document.getElementById('downloadBtn').disabled = true;
+            document.getElementById('githubBtn').disabled = true;
+            document.getElementById('presetBadge').innerHTML = '';
+            obfuscatedCode = '';
+        }
+
+        function loadSample() {
+            document.getElementById('inputCode').value = `function calculateTotal(cart) {
+    let total = 0;
+    const tax = 0.1;
+
+    for (let item of cart) {
+        if (item.price > 0 && item.qty > 0) {
+            total += item.price * item.qty;
+        }
+    }
+
+    const finalTotal = total + (total * tax);
+
+    return {
+        subtotal: total,
+        tax: total * tax,
+        total: finalTotal
+    };
+}
+
+const cart = [
+    { name: "Laptop", price: 999, qty: 1 },
+    { name: "Mouse", price: 25, qty: 2 }
+];
+
+console.log(calculateTotal(cart));`;
+        }
+
+        function loadSampleFromHeader() {
+            loadSample();
+            showNotification('Sample loaded!', 'success');
+        }
+
+        function openGithubModal() {
+            if (!obfuscatedCode) {
+                showNotification('No obfuscated code to push');
+                return;
+            }
+            document.getElementById('githubModal').style.display = 'flex';
+            document.body.classList.add('modal-open');
+        }
+
+        function closeGithubModal() {
+            document.getElementById('githubModal').style.display = 'none';
+            document.body.classList.remove('modal-open');
+        }
+
+        document.getElementById('githubModal').addEventListener('click', function(e) {
+            if (e.target === this) closeGithubModal();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeGithubModal();
+        });
+
+        async function pushToGithub() {
+            const token = document.getElementById('githubToken').value.trim();
+            const repo = document.getElementById('githubRepo').value.trim();
+            const path = document.getElementById('githubPath').value.trim();
+            const message = document.getElementById('githubMessage').value.trim() || 'Update obfuscated file';
+            const branch = document.getElementById('githubBranch').value.trim() || 'main';
+
+            if (!token || !repo || !path) {
+                showNotification('Please fill in all required fields');
+                return;
+            }
+
+            const pushBtn = document.querySelector('#githubModal .btn-primary');
+            pushBtn.disabled = true;
+            pushBtn.innerHTML = '<span class="loading"></span> Pushing...';
+
+            try {
+                const code = document.getElementById('inputCode').value.trim();
+                let requestBody = {
+                    code: code,
+                    github_token: token,
+                    github_repo: repo,
+                    github_path: path,
+                    github_message: message,
+                    github_branch: branch
+                };
+
+                const cliCommand = document.getElementById('cliInput').value.trim();
+                if (cliCommand) {
+                    requestBody.cli = cliCommand;
+                } else {
+                    requestBody.preset = currentPreset;
+                }
+
+                const res = await fetch('/api/obfuscate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(requestBody)
+});
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || data.message);
+
+                if (data.github && data.github.pushed) {
+                    showNotification('Pushed to GitHub!', 'success');
+                }
+                closeGithubModal();
+            } catch (err) {
+                showNotification(err.message || 'GitHub push failed');
+            } finally {
+                pushBtn.disabled = false;
+                pushBtn.innerHTML = `<svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg> Push`;
+            }
+        }
+
+        loadSample();
+    </script>
+</body>
+</html>
